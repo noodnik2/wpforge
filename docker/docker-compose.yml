@@ -1,0 +1,32 @@
+version: '3.1'
+
+services:
+  wordpress:
+    image: wordpress
+    depends_on: [db]
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      WP_ENVIRONMENT_TYPE: local
+      WP_DEBUG: true
+    ports:
+      - "8080:80"
+    volumes:
+      # This mapping points to a local folder containing either a full set of
+      # wordpress site files, or to a "Duplicator" package that can be expanded
+      # into a full set of (replicated) wordpress site files by navigating to it
+      # (e.g., at "http://localhost:8080/installer.php") in order to re-sync the
+      # environment to match the package created with "Duplicator."
+      - './volumes/wordpress:/var/www/html'
+  db:
+    image: mysql:8.0.28
+    cap_add:
+      - SYS_NICE  # CAP_SYS_NICE
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    ports:
+      - '3306:3306'
