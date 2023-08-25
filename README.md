@@ -82,6 +82,15 @@ Now the set of running Docker containers can be used as a sort of "staging" envi
 accessed via the URL [http://localhost:8080](http://localhost:8080), and should behave
 similarly to the production environment in response to changes.
 
+## Notes
+
+I've noticed response time for pretty much all operations within the dockerized instance
+is _very_ slow - at least 20 seconds or so for every click or operation!
+
+As of late August 2023, after hours spent trying to discover a more precise source of the
+slowness, the best solution in hand is to completely disable the "Wordfence" plugin.  Doing
+so brings the response time down to about 3 seconds for most operations.
+
 ## Project Name
 
 I used ChatGPT to help come up with the name for this project.  For posterity, I'm including
