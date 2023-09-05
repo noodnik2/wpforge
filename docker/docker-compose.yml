@@ -25,6 +25,7 @@ services:
     cap_add:
       - SYS_NICE  # CAP_SYS_NICE
     environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: true
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
