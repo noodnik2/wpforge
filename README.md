@@ -41,7 +41,7 @@ context relevant to the use of "Duplicator" in creating a copy of a WordPress we
    - E.g., download & store the package files within a `backups` sub-folder
 2. Copy the files comprising the "Duplicator Package" into an _empty_ `docker/volumes/wordpress`
    folder; e.g.:
-   - `$ mkdir docker/volumes/wordpress || rm -r docker/volumes/wordpress/*`
+   - `$ mkdir -p docker/volumes/wordpress || rm -r docker/volumes/wordpress/*`
    - `$ (cd backups/230806-duplicator; cp installer.php *_archive.zip ../../docker/volumes/wordpress)`
 3. Bring up the local "clone" website by starting the Docker containers; e.g.
    - `$ (cd docker; docker-compose up)`
