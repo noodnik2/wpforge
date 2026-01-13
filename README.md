@@ -38,11 +38,13 @@ context relevant to the use of "Duplicator" in creating a copy of a WordPress we
 
 1. From within the production website's `Duplicator` plugin administrator page, create and
    download a "Duplicator Package" containing a complete export of the website.
-   - E.g., download & store the package files within a `backups` sub-folder
-2. Copy the files comprising the "Duplicator Package" into an _empty_ `docker/volumes/wordpress`
-   folder; e.g.:
-   - `$ mkdir docker/volumes/wordpress || rm -r docker/volumes/wordpress/*`
-   - `$ (cd backups/230806-duplicator; cp installer.php *_archive.zip ../../docker/volumes/wordpress)`
+   - E.g., download & store the package files within a `backups` sub-folder - e.g.:
+     - `backups/250720-duplicator/installer.php`
+     - `backups/250720-duplicator/20250720_mysite_873a3d9506e49ea44481_20250720012707_archive.zip`
+2. Copy the files comprising the "Duplicator Package" into an _empty_ `docker/volumes/wordpress` folder;
+   e.g., in the example below where the "Duplicator Package" was copied into the folder `250720-duplicator`:
+   - `$ mkdir -p docker/volumes/wordpress || rm -r docker/volumes/wordpress/*`
+   - `$ (cd backups/250720-duplicator; cp installer.php *_archive.zip ../../docker/volumes/wordpress)`
 3. Bring up the local "clone" website by starting the Docker containers; e.g.
    - `$ (cd docker; docker-compose up)`
 4. After giving enough time for the "Duplicator installer" application to initialize,
@@ -57,12 +59,27 @@ context relevant to the use of "Duplicator" in creating a copy of a WordPress we
      - Password: `wordpress` (see: `docker-compose.yml:WORDPRESS_DB_PASSWORD`)
    - Proceed to `Validate`, accept the terms, then `Next` to the next step...
    - `Step: Test Site`
+     - **IMPORTANT** - When it asks you to login as an administrator in a later step (see below), you _should_ be able
+       to use a credential present in the cloned site; however, if that does't work for some reason (e.g., you keep
+       getting "invalid password" errors), you can create a _new_ administrator account to login with:
+       - Copy the `create-admin.php` file to the top-level site folder: i.e.:
+         - `$ cp docker/create-admin.php docker/volumes/wordpress`
+       - Ensure the `create-admin` function is run before continuing; e.g. you can browse to it at:
+           - http://localhost:8080/create-admin.php
+       - You can confirm that it has run successfully from its output, or from the log entries it generates.
+       - It will create the user / password listed in it (e.g., user=`admin`, password=`admin`) if successful.
+     - **IMPORTANT** - Consider "insulating" the cloned site from its surroundings to prevent unwanted communication.
+       - For example if the site sends out e-mails, consider blocking them; e.g.:
+         - Copy the `block-emails.php` file to the "must plugins" folder; i.e.:
+           - `$ mkdir -p docker/volumes/wordpress/wp-content/mu-plugins`
+           - `$ cp docker/block-emails.php docker/volumes/wordpress/wp-content/mu-plugins`
      - Complete the process by pressing on the button to navigate to the
        [Admin Login](http://localhost:8080/wp-admin/admin.php)
        page, and ... wait until you see the login dialog.
-     - Log in as the administrator user (i.e., the usual credential should work).
-       Allow some time to complete and give confirmation / result summary of the
-       site migration.
+     - Log in as an administrator user (e.g., `admin`/`admin` if you ran the `create-admin` script suggested
+       above).  Give it time to complete - it should display a confirmation summary of the site migration.
+   - Consider deactivating any plugins that are irrelevant or inappropriate for your workflow; e.g.:
+     - `WordFence` - has been seen to slow down page loads by as much at 25 seconds each!
    - Confirm Independence from Production Website
      - At least initially, consider confirming proper operation of the new website in
        a completely "local" operating mode (i.e., after dropping your connection to the
